@@ -8,12 +8,14 @@
 
 import React from 'react';
 import {
+  NativeModules,
   SafeAreaView,
   StyleSheet,
   ScrollView,
   View,
   Text,
   StatusBar,
+  TouchableOpacity
 } from 'react-native';
 
 import {
@@ -24,6 +26,21 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import ActivityExample from './ActivityExample';
+
+export const openActivity = async () => {
+  if (Platform.OS === 'android') {
+    console.log("OPENING")
+    NativeModules.ActivityModule.startLinkActivityForResult(
+      (result) => {
+        console.log("RESULT")
+        console.log(result)
+      },
+    );
+  } else {
+  }
+};
+
 const App: () => React$Node = () => {
   return (
     <>
@@ -32,41 +49,14 @@ const App: () => React$Node = () => {
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
+            <View styles={styles.body}>
+              <TouchableOpacity  onPress={() => openActivity()}>
+                <View style={styles.appButtonContainer}>
+                  <Text style={styles.appButtonText}>Open Activity</Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
+          </ScrollView>
       </SafeAreaView>
     </>
   );
@@ -108,6 +98,20 @@ const styles = StyleSheet.create({
     padding: 4,
     paddingRight: 12,
     textAlign: 'right',
+  },
+  appButtonContainer: {
+    elevation: 4,
+    backgroundColor: '#000',
+    width: '100%',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+  },
+  appButtonText: {
+    fontSize: 18,
+    color: '#fff',
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    textTransform: 'uppercase',
   },
 });
 
