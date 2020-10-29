@@ -19,6 +19,18 @@ class ActivityModule extends ReactContextBaseJavaModule implements ActivityEvent
     reactContext = context;
   }
 
+  @Override
+  public void initialize() {
+    super.initialize();
+    getReactApplicationContext().addActivityEventListener(this);
+  }
+
+  @Override
+  public void onCatalystInstanceDestroy() {
+    super.onCatalystInstanceDestroy();
+    getReactApplicationContext().removeActivityEventListener(this);
+  }
+
   @NonNull
   @Override
   public String getName() {
@@ -30,6 +42,7 @@ class ActivityModule extends ReactContextBaseJavaModule implements ActivityEvent
   public void startLinkActivityForResult(Callback onComplete) {
     Activity activity = getCurrentActivity();
     if (activity != null) {
+      this.onComplete = onComplete;
       activity.startActivityForResult(new Intent(activity, SecondActivity.class), REQUEST_CODE);
     }
   }
